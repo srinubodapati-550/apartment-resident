@@ -1,0 +1,468 @@
+.finance-page {
+  width: 100%;
+  padding: 22px 24px 100px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* HEADER */
+
+.finance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.finance-header h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: #222;
+}
+
+.finance-header p {
+  margin: 5px 0 0;
+  color: #777;
+  font-size: 14px;
+}
+
+/* ERROR */
+
+.finance-error {
+  padding: 13px 15px;
+  margin-bottom: 18px;
+  border-radius: 8px;
+  background: #fff1f1;
+  border: 1px solid #f0caca;
+  color: #c62828;
+  font-size: 14px;
+}
+
+/* LOADING */
+
+.finance-loading {
+  padding: 50px 20px;
+  text-align: center;
+  color: #777;
+}
+
+/* SUMMARY */
+
+.finance-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.finance-summary-card {
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.finance-summary-label {
+  display: block;
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 8px;
+}
+
+.finance-summary-value {
+  display: block;
+  font-size: 21px;
+  color: #222;
+  font-weight: 700;
+}
+
+.finance-summary-note {
+  display: block;
+  margin-top: 7px;
+  font-size: 11px;
+  color: #999;
+}
+
+/* SECTION */
+
+.finance-section {
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.finance-section-header {
+  padding: 20px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.finance-section-header h2 {
+  margin: 0;
+  font-size: 19px;
+  color: #222;
+}
+
+.finance-section-header p {
+  margin: 5px 0 0;
+  color: #888;
+  font-size: 13px;
+}
+
+/* EXPENSE LIST */
+
+.finance-expense-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.finance-expense-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.finance-expense-card:last-child {
+  border-bottom: none;
+}
+
+.finance-expense-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  min-width: 0;
+}
+
+.finance-expense-icon {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: 10px;
+  background: #f5f7fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #1565c0;
+}
+
+.finance-expense-info {
+  min-width: 0;
+}
+
+.finance-expense-info h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 650;
+  color: #222;
+}
+
+.finance-expense-description {
+  margin: 4px 0 7px;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.4;
+}
+
+.finance-expense-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  font-size: 11px;
+  color: #888;
+}
+
+.finance-expense-meta span {
+  padding-right: 7px;
+  border-right: 1px solid #ddd;
+}
+
+.finance-expense-meta span:last-child {
+  border-right: none;
+  padding-right: 0;
+}
+
+.finance-expense-amount {
+  flex-shrink: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #c62828;
+}
+
+/* EMPTY */
+
+.finance-empty {
+  text-align: center;
+  padding: 55px 20px;
+}
+
+.finance-empty-icon {
+  font-size: 38px;
+  margin-bottom: 10px;
+}
+
+.finance-empty h3 {
+  margin: 0;
+  font-size: 17px;
+  color: #333;
+}
+
+.finance-empty p {
+  margin: 7px auto 0;
+  max-width: 420px;
+  color: #888;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* MOBILE */
+
+@media (max-width: 800px) {
+  .finance-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .finance-page {
+    padding: 18px 16px 100px;
+  }
+
+  .finance-header {
+    margin-bottom: 18px;
+  }
+
+  .finance-header h1 {
+    font-size: 23px;
+  }
+
+  .finance-header p {
+    font-size: 13px;
+  }
+
+  .finance-summary {
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .finance-summary-card {
+    padding: 14px;
+  }
+
+  .finance-summary-label {
+    font-size: 11px;
+  }
+
+  .finance-summary-value {
+    font-size: 17px;
+  }
+
+  .finance-summary-note {
+    font-size: 10px;
+  }
+
+  .finance-section-header {
+    padding: 16px;
+  }
+
+  .finance-section-header h2 {
+    font-size: 17px;
+  }
+
+  .finance-expense-card {
+    padding: 15px;
+    gap: 10px;
+  }
+
+  .finance-expense-main {
+    gap: 10px;
+  }
+
+  .finance-expense-icon {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    font-size: 13px;
+  }
+
+  .finance-expense-info h3 {
+    font-size: 14px;
+  }
+
+  .finance-expense-description {
+    font-size: 12px;
+  }
+
+  .finance-expense-meta {
+    font-size: 10px;
+  }
+
+  .finance-expense-amount {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 380px) {
+  .finance-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .finance-expense-card {
+    align-items: flex-start;
+  }
+
+  .finance-expense-amount {
+    font-size: 13px;
+  }
+}
+
+.finance-month-summary {
+  margin: 0 0 22px;
+  padding: 18px 20px;
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+}
+
+.finance-month-summary div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.finance-month-label {
+  font-size: 14px;
+  color: #666;
+}
+
+.finance-month-summary strong {
+  font-size: 18px;
+  color: #222;
+}
+
+/* =========================
+   FINANCE FILTER
+========================= */
+
+.finance-filter-card {
+  margin-bottom: 22px;
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+}
+
+.finance-filter-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.finance-filter-title h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #222;
+}
+
+.finance-filter-title p {
+  margin: 5px 0 0;
+  font-size: 13px;
+  color: #777;
+}
+
+.finance-filter-controls {
+  display: flex;
+  gap: 14px;
+}
+
+.finance-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 180px;
+}
+
+.finance-filter-field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+}
+
+.finance-filter-field select {
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #222;
+  font-size: 14px;
+  outline: none;
+}
+
+.finance-filter-field select:focus {
+  border-color: #1565c0;
+}
+
+/* =========================
+   EXPENSE COUNT
+========================= */
+
+.finance-expense-count {
+  font-size: 13px;
+  color: #777;
+  white-space: nowrap;
+}
+
+/* =========================
+   MORE EXPENSES
+========================= */
+
+.finance-more-expenses {
+  margin-top: 14px;
+  padding: 12px;
+  text-align: center;
+  font-size: 13px;
+  color: #666;
+  background: #f8f8f8;
+  border-radius: 8px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+  .finance-filter-card {
+    padding: 16px;
+  }
+
+  .finance-filter-controls {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .finance-filter-field {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .finance-filter-field select {
+    width: 100%;
+  }
+
+  .finance-section-header {
+    align-items: flex-start;
+  }
+
+  .finance-expense-count {
+    font-size: 12px;
+  }
+}

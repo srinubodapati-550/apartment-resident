@@ -1,0 +1,1949 @@
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f6f8;
+  color: #222;
+}
+
+button {
+  font-family: inherit;
+}
+
+.app {
+  min-height: 100vh;
+  padding-bottom: 70px;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.app-header {
+  background: #ffffff;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e5e5;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.app-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.app-user {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #666;
+}
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.app-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.page {
+  padding: 24px 20px;
+}
+
+.page h1 {
+  margin-top: 0;
+}
+
+/* =========================================================
+   BOTTOM NAVIGATION
+========================================================= */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background: #ffffff;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: space-around;
+  z-index: 100;
+}
+
+.bottom-nav button {
+  flex: 1;
+  border: none;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  color: #777;
+}
+
+.bottom-nav button span {
+  font-size: 21px;
+}
+
+.bottom-nav button small {
+  font-size: 11px;
+}
+
+.bottom-nav button.active {
+  color: #1565c0;
+  font-weight: 600;
+}
+
+/* =========================================================
+   MORE
+========================================================= */
+
+.more-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.more-menu button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: white;
+  text-align: left;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.more-menu button span {
+  font-size: 15px;
+}
+
+.more-menu .logout-button {
+  margin-top: 15px;
+  color: #c62828;
+}
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.loading-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================================================
+   DESKTOP
+========================================================= */
+
+@media (min-width: 768px) {
+  .bottom-nav {
+    width: 600px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    border: 1px solid #ddd;
+    border-bottom: none;
+    border-radius: 14px 14px 0 0;
+  }
+}
+
+/* =========================================================
+   EMPTY CARD
+========================================================= */
+
+.empty-card {
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 30px 20px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.empty-icon {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+/* =========================================================
+   NOTICES
+========================================================= */
+
+.notice-list,
+.notification-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.notice-card,
+.notification-card {
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.notice-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.notice-header h3 {
+  margin: 0;
+}
+
+.priority {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 10px;
+  background: #eee;
+}
+
+.notice-card p {
+  line-height: 1.5;
+}
+
+.notice-card small,
+.notification-card small {
+  color: #777;
+}
+
+/* =========================================================
+   PAGE TITLE
+========================================================= */
+
+.page-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.text-button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #1565c0;
+}
+
+/* =========================================================
+   NOTIFICATIONS
+========================================================= */
+
+.notification-card {
+  display: flex;
+  gap: 12px;
+  position: relative;
+  cursor: pointer;
+}
+
+.notification-card.unread {
+  background: #f0f6ff;
+}
+
+.notification-icon {
+  font-size: 24px;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-content strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.notification-content p {
+  margin: 0 0 8px;
+  line-height: 1.4;
+}
+
+.unread-dot {
+  width: 8px;
+  height: 8px;
+  background: #1565c0;
+  border-radius: 50%;
+  margin-top: 6px;
+}
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+.profile-card {
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 25px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.profile-avatar {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  background: #1565c0;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.profile-card h2 {
+  margin: 10px 0 25px;
+}
+
+.profile-info {
+  text-align: left;
+}
+
+.profile-info div {
+  padding: 14px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.profile-info span {
+  display: block;
+  color: #777;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.profile-info strong {
+  font-size: 15px;
+}
+
+/* =========================================================
+   BILLS
+========================================================= */
+
+.bill-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.bill-card {
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 14px;
+  padding: 18px;
+  cursor: pointer;
+}
+
+.bill-card:active {
+  transform: scale(0.99);
+}
+
+.bill-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.bill-card-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.bill-type {
+  margin: 5px 0 0;
+  color: #777;
+  font-size: 13px;
+}
+
+.bill-amount {
+  font-size: 26px;
+  font-weight: 700;
+  margin: 18px 0;
+}
+
+.bill-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  border-top: 1px solid #eee;
+  padding-top: 14px;
+}
+
+.bill-details div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bill-details span {
+  font-size: 12px;
+  color: #777;
+}
+
+.bill-details strong {
+  font-size: 14px;
+}
+
+.bill-status {
+  padding: 5px 9px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.bill-status.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.bill-status.partially_paid {
+  background: #e8eaf6;
+  color: #3949ab;
+}
+
+.bill-status.paid {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.bill-status.overdue {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.bill-status.cancelled {
+  background: #eeeeee;
+  color: #666;
+}
+
+/* =========================================================
+   ERROR CARD
+========================================================= */
+
+.error-card {
+  background: #fff;
+  border: 1px solid #ffcdd2;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.error-card p {
+  color: #c62828;
+}
+
+.error-card button {
+  border: none;
+  background: #1565c0;
+  color: white;
+  padding: 9px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* =========================================================
+   BILL DETAILS
+========================================================= */
+
+.back-button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: #1565c0;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.bill-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.bill-detail-header h1 {
+  margin-bottom: 5px;
+}
+
+.bill-detail-header p {
+  margin-top: 0;
+  color: #777;
+}
+
+.bill-detail-amount-card {
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 14px;
+  padding: 22px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.bill-detail-amount-card span {
+  display: block;
+  color: #777;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.bill-detail-amount-card strong {
+  font-size: 32px;
+}
+
+.bill-detail-card {
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 14px;
+  padding: 18px;
+  margin-top: 14px;
+}
+
+.bill-detail-card h2 {
+  margin-top: 0;
+  font-size: 17px;
+  margin-bottom: 15px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-row span {
+  color: #777;
+  font-size: 13px;
+}
+
+.detail-row strong {
+  text-align: right;
+  font-size: 14px;
+}
+
+.fund-description {
+  margin-top: 12px;
+  padding: 12px;
+  background: #f7f7f7;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   PAYMENT
+========================================================= */
+
+.payment-action-card {
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 14px;
+  padding: 18px;
+  margin-top: 14px;
+  margin-bottom: 20px;
+}
+
+.payment-action-card h3 {
+  margin-top: 0;
+}
+
+.payment-action-card p {
+  color: #666;
+  line-height: 1.5;
+}
+
+.payment-action-card small {
+  display: block;
+  margin-top: 10px;
+  color: #777;
+}
+
+.primary-button {
+  width: 100%;
+  border: none;
+  border-radius: 9px;
+  padding: 12px;
+  background: #1565c0;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.primary-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.secondary-button {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 9px;
+  padding: 12px;
+  background: #fff;
+  color: #444;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.payment-form-card {
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 14px;
+  padding: 18px;
+  margin-top: 14px;
+  margin-bottom: 20px;
+}
+
+.payment-form-card h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.payment-form-card .form-group {
+  margin-bottom: 16px;
+}
+
+.payment-form-card .form-group label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.payment-form-card .form-group input,
+.payment-form-card .form-group select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  border: 1px solid #d8d8d8;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fff;
+}
+
+.payment-form-card .form-group input:focus,
+.payment-form-card .form-group select:focus {
+  outline: none;
+  border-color: #1565c0;
+}
+
+.payment-form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.payment-form-actions button {
+  flex: 1;
+}
+
+.payment-message {
+  padding: 12px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.payment-history-empty {
+  text-align: center;
+  padding: 20px 10px;
+  color: #777;
+}
+
+.payment-history-empty div {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.payment-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.payment-history-item {
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 14px;
+  background: #fafafa;
+}
+
+.payment-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.payment-history-header strong {
+  font-size: 18px;
+}
+
+.payment-status {
+  padding: 5px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.payment-status-approved {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.payment-status-rejected {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.payment-status-submitted {
+  background: #fff8e1;
+  color: #f57f17;
+}
+
+.payment-history-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 0;
+  font-size: 13px;
+}
+
+.payment-history-row span {
+  color: #777;
+}
+
+.payment-history-row strong {
+  text-align: right;
+  word-break: break-word;
+}
+
+.payment-rejection {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  background: #fff3f3;
+  font-size: 13px;
+}
+
+.payment-rejection p {
+  margin: 6px 0 0;
+  line-height: 1.4;
+}
+
+.pending-payment-message {
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  color: #6d5600;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   COMPLAINTS
+========================================================= */
+
+.complaints-page {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 22px 24px 100px;
+}
+
+/* =========================================================
+   COMPLAINT HEADER
+========================================================= */
+
+.complaints-page .page-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 24px;
+  margin-bottom: 22px;
+  width: 100%;
+}
+
+.complaints-page .page-header > div {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.complaints-page .page-header h2 {
+  margin: 0;
+  color: #171717;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.complaints-page .page-header p {
+  margin: 7px 0 0;
+  color: #737373;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   RAISE COMPLAINT BUTTON
+========================================================= */
+
+.complaints-page .page-header .primary-button {
+  width: auto !important;
+  min-width: 190px;
+  max-width: 220px;
+  height: 46px;
+  padding: 0 20px;
+  flex: 0 0 auto !important;
+  border: none;
+  border-radius: 11px;
+  background: #1565c0;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(21, 101, 192, 0.18);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.complaints-page .page-header .primary-button:hover {
+  background: #0d47a1;
+  box-shadow: 0 6px 14px rgba(21, 101, 192, 0.25);
+  transform: translateY(-1px);
+}
+
+.complaints-page .page-header .primary-button:active {
+  transform: translateY(0);
+}
+
+/* =========================================================
+   COMPLAINT LIST
+========================================================= */
+
+.complaints-list {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+/* =========================================================
+   COMPLAINT CARD
+========================================================= */
+
+.complaint-card {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 15px;
+  padding: 18px 20px;
+  cursor: pointer;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.035),
+    0 1px 2px rgba(0, 0, 0, 0.025);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.complaint-card:hover {
+  transform: translateY(-1px);
+  border-color: #d7dce2;
+  box-shadow:
+    0 7px 18px rgba(0, 0, 0, 0.07),
+    0 2px 5px rgba(0, 0, 0, 0.03);
+}
+
+.complaint-card:active {
+  transform: scale(0.995);
+}
+
+/* =========================================================
+   CARD TOP
+========================================================= */
+
+.complaint-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.complaint-card-top > div:first-child {
+  min-width: 0;
+}
+
+.complaint-card h3 {
+  margin: 0;
+  color: #171717;
+  font-size: 17px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.complaint-number {
+  display: block;
+  margin-top: 5px;
+  color: #8a8a8a;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* =========================================================
+   STATUS BADGES
+========================================================= */
+
+.complaints-page .status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 78px;
+  height: 29px;
+  padding: 0 11px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.complaints-page .status-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+/* OPEN */
+
+.complaints-page .complaint-status-open {
+  background: #fff7d6;
+  color: #946200;
+}
+
+.complaints-page .complaint-status-open::before {
+  background: #e5a500;
+}
+
+/* IN PROGRESS */
+
+.complaints-page .complaint-status-progress {
+  background: #e8f0ff;
+  color: #315bb5;
+}
+
+.complaints-page .complaint-status-progress::before {
+  background: #4776d8;
+}
+
+/* RESOLVED */
+
+.complaints-page .complaint-status-resolved {
+  background: #e7f7ed;
+  color: #237a45;
+}
+
+.complaints-page .complaint-status-resolved::before {
+  background: #2e9d5b;
+}
+
+/* CLOSED */
+
+.complaints-page .complaint-status-closed {
+  background: #f0f1f3;
+  color: #555b66;
+}
+
+.complaints-page .complaint-status-closed::before {
+  background: #737983;
+}
+
+/* REJECTED */
+
+.complaints-page .complaint-status-rejected {
+  background: #fdeaea;
+  color: #b43b3b;
+}
+
+.complaints-page .complaint-status-rejected::before {
+  background: #d34b4b;
+}
+
+/* =========================================================
+   COMPLAINT META
+========================================================= */
+
+.complaints-page .complaint-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 15px;
+  padding-top: 13px;
+  border-top: 1px solid #f0f1f3;
+  color: #737373;
+  font-size: 12px;
+}
+
+.complaints-page .complaint-meta > span {
+  display: inline-flex;
+  align-items: center;
+}
+
+.complaints-page .complaint-meta > span:first-child {
+  color: #555;
+  font-weight: 500;
+}
+
+/* =========================================================
+   PRIORITY
+========================================================= */
+
+.complaints-page .priority-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 26px;
+  padding: 0 9px;
+  border-radius: 7px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.complaints-page .complaint-priority-low {
+  background: #edf8ef;
+  color: #32804a;
+}
+
+.complaints-page .complaint-priority-normal {
+  background: #f1f3f6;
+  color: #59616d;
+}
+
+.complaints-page .complaint-priority-high {
+  background: #fff4d8;
+  color: #a06b00;
+}
+
+.complaints-page .complaint-priority-urgent {
+  background: #fde9e9;
+  color: #bd3d3d;
+}
+
+/* =========================================================
+   COMPLAINT DESCRIPTION
+========================================================= */
+
+.complaints-page .complaint-description {
+  margin: 13px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid #f1f1f1;
+  color: #555;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   RESOLUTION
+========================================================= */
+
+.complaints-page .resolution-box {
+  margin-top: 13px;
+  padding: 12px 14px;
+  border: 1px solid #d9f0df;
+  border-radius: 10px;
+  background: #f4fbf6;
+}
+
+.complaints-page .resolution-box strong {
+  display: block;
+  color: #287345;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.complaints-page .resolution-box p {
+  margin: 5px 0 0;
+  color: #3f6d4d;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   COMPLAINT FORM
+========================================================= */
+
+.complaints-page .complaint-form-card {
+  margin-bottom: 20px;
+  padding: 22px;
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.045);
+}
+
+.complaints-page .form-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 22px;
+}
+
+.complaints-page .form-card-header h3 {
+  margin: 0;
+  color: #171717;
+  font-size: 19px;
+}
+
+.complaints-page .form-card-header p {
+  margin: 5px 0 0;
+  color: #777;
+  font-size: 13px;
+}
+
+.complaints-page .close-button {
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  background: #f3f3f3;
+  color: #666;
+  font-size: 23px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.complaints-page .close-button:hover {
+  background: #e9e9e9;
+}
+
+/* =========================================================
+   FORM FIELDS
+========================================================= */
+
+.complaints-page .form-group {
+  margin-bottom: 17px;
+}
+
+.complaints-page .form-group label {
+  display: block;
+  margin-bottom: 7px;
+  color: #333;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.complaints-page .form-group input,
+.complaints-page .form-group select,
+.complaints-page .form-group textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 13px;
+  border: 1px solid #dcdcdc;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #222;
+  font-family: inherit;
+  font-size: 14px;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.complaints-page .form-group textarea {
+  min-height: 115px;
+  resize: vertical;
+}
+
+.complaints-page .form-group input:focus,
+.complaints-page .form-group select:focus,
+.complaints-page .form-group textarea:focus {
+  outline: none;
+  border-color: #1565c0;
+  box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.1);
+}
+
+/* =========================================================
+   FORM BUTTONS
+========================================================= */
+
+.complaints-page .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.complaints-page .form-actions .primary-button,
+.complaints-page .form-actions .secondary-button {
+  width: auto;
+  min-width: 130px;
+  height: 42px;
+  padding: 0 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.complaints-page .form-actions .primary-button {
+  border: none;
+  background: #1565c0;
+  color: #ffffff;
+}
+
+.complaints-page .form-actions .secondary-button {
+  border: 1px solid #d6d6d6;
+  background: #ffffff;
+  color: #444;
+}
+
+.complaints-page .form-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   EMPTY / LOADING
+========================================================= */
+
+.complaints-page .empty-state,
+.complaints-page .loading-state {
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.complaints-page .empty-state {
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 16px;
+}
+
+.complaints-page .empty-icon {
+  margin-bottom: 12px;
+  font-size: 42px;
+}
+
+.complaints-page .empty-state h3 {
+  margin: 0 0 8px;
+  color: #222;
+  font-size: 18px;
+}
+
+.complaints-page .empty-state p {
+  max-width: 360px;
+  margin: 0 auto 20px;
+  color: #777;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.complaints-page .empty-state .primary-button {
+  width: auto;
+  min-width: 170px;
+  display: inline-block;
+  background: #1565c0;
+}
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.complaints-page .error-message {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border: 1px solid #f5caca;
+  border-radius: 10px;
+  background: #fff1f1;
+  color: #a33;
+  font-size: 13px;
+}
+
+/* =========================================================
+   COMPLAINT DETAILS
+========================================================= */
+
+.complaint-details-page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 18px 20px 100px;
+}
+
+/* ---------- Back ---------- */
+
+.details-back-button {
+  border: none;
+  background: transparent;
+  color: #1565c0;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 0;
+  margin-bottom: 14px;
+  cursor: pointer;
+}
+
+.details-back-button:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Header ---------- */
+
+.complaint-details-header {
+  margin-bottom: 18px;
+}
+
+.complaint-details-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.045);
+}
+
+.complaint-details-title-row h1 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.3;
+  color: #172033;
+  font-weight: 700;
+}
+
+.complaint-details-page .complaint-number {
+  margin: 7px 0 0;
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.complaint-details-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.complaint-details-badges .status-badge,
+.complaint-details-badges .priority-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+/* ---------- Detail Badge Colors ---------- */
+
+.complaint-details-page .status-open {
+  background: #e8f1ff;
+  color: #1565c0;
+}
+
+.complaint-details-page .status-in-progress {
+  background: #fff4df;
+  color: #b45309;
+}
+
+.complaint-details-page .status-resolved {
+  background: #e8f7ee;
+  color: #15803d;
+}
+
+.complaint-details-page .status-closed {
+  background: #eef0f3;
+  color: #4b5563;
+}
+
+.complaint-details-page .status-rejected {
+  background: #feecec;
+  color: #dc2626;
+}
+
+.complaint-details-page .priority-low {
+  background: #eef7ee;
+  color: #388e3c;
+}
+
+.complaint-details-page .priority-normal {
+  background: #eef2f7;
+  color: #475569;
+}
+
+.complaint-details-page .priority-high {
+  background: #fff4df;
+  color: #c2410c;
+}
+
+.complaint-details-page .priority-urgent {
+  background: #feecec;
+  color: #dc2626;
+}
+
+/* ---------- Cards ---------- */
+
+.complaint-details-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 22px;
+  margin-bottom: 16px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.045);
+}
+
+/* ---------- Info ---------- */
+
+.complaint-info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #edf0f3;
+}
+
+.complaint-info-item {
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.info-label {
+  display: block;
+  font-size: 11px;
+  color: #7b8491;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 5px;
+}
+
+.info-value {
+  display: block;
+  color: #1f2937;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* ---------- Description ---------- */
+
+.complaint-detail-section {
+  margin-top: 20px;
+}
+
+.complaint-detail-section h3,
+.timeline-title {
+  margin: 0 0 10px;
+  color: #1f2937;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.complaint-details-page .complaint-description {
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 14px 16px;
+  color: #4b5563;
+  font-size: 14px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+.resolution-section {
+  padding-top: 18px;
+  border-top: 1px solid #edf0f3;
+}
+
+.closed-date {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* =========================================================
+   COMPLAINT TIMELINE
+========================================================= */
+
+.timeline-title {
+  margin-bottom: 20px;
+}
+
+.complaint-timeline {
+  position: relative;
+  padding-left: 8px;
+}
+
+.complaint-timeline::before {
+  content: '';
+  position: absolute;
+  left: 13px;
+  top: 8px;
+  bottom: 10px;
+  width: 2px;
+  background: #e5e7eb;
+}
+
+.timeline-item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  min-height: 58px;
+  padding-bottom: 18px;
+}
+
+.timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.timeline-dot {
+  position: relative;
+  z-index: 2;
+  width: 12px;
+  height: 12px;
+  margin-top: 4px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #d1d5db;
+  border: 3px solid #ffffff;
+  box-shadow: 0 0 0 1px #d1d5db;
+}
+
+.timeline-item.completed .timeline-dot {
+  background: #1565c0;
+  box-shadow: 0 0 0 1px #1565c0;
+}
+
+.timeline-item.rejected .timeline-dot {
+  background: #dc2626;
+  box-shadow: 0 0 0 1px #dc2626;
+}
+
+.timeline-item strong {
+  display: block;
+  color: #1f2937;
+  font-size: 14px;
+  margin-bottom: 3px;
+}
+
+.timeline-item span {
+  display: block;
+  color: #7b8491;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* =========================================================
+   DETAILS LOADING / ERROR
+========================================================= */
+
+.details-loading {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 40px 20px;
+  text-align: center;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.details-error {
+  background: #fff5f5;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  padding: 16px;
+  color: #b91c1c;
+  font-size: 14px;
+}
+
+/* =========================================================
+   COMPLAINT MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .complaints-page {
+    padding: 16px 14px 100px;
+  }
+
+  .complaints-page .page-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 13px;
+    margin-bottom: 18px;
+  }
+
+  .complaints-page .page-header h2 {
+    font-size: 24px;
+  }
+
+  .complaints-page .page-header p {
+    font-size: 12px;
+  }
+
+  .complaints-page .page-header .primary-button {
+    width: 100% !important;
+    max-width: none;
+    min-width: 0;
+  }
+
+  .complaint-card {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .complaint-card-top {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .complaints-page .status-badge {
+    align-self: flex-start;
+  }
+
+  .complaints-page .complaint-meta {
+    gap: 7px;
+  }
+
+  .complaints-page .complaint-form-card {
+    padding: 18px;
+  }
+
+  .complaints-page .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .complaints-page .form-actions button {
+    width: 100%;
+  }
+
+  /* Details */
+
+  .complaint-details-page {
+    padding: 14px 14px 90px;
+  }
+
+  .details-back-button {
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+
+  .complaint-details-title-row {
+    display: block;
+    padding: 17px;
+    border-radius: 14px;
+  }
+
+  .complaint-details-title-row h1 {
+    font-size: 20px;
+  }
+
+  .complaint-details-page .complaint-number {
+    font-size: 12px;
+  }
+
+  .complaint-details-badges {
+    justify-content: flex-start;
+    margin-top: 13px;
+  }
+
+  .complaint-details-badges .status-badge,
+  .complaint-details-badges .priority-badge {
+    min-height: 28px;
+    padding: 4px 9px;
+    font-size: 10px;
+  }
+
+  .complaint-details-card {
+    padding: 17px;
+    border-radius: 14px;
+  }
+
+  .complaint-info-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 9px;
+    padding-bottom: 17px;
+  }
+
+  .complaint-info-item {
+    padding: 10px 11px;
+  }
+
+  .info-label {
+    font-size: 10px;
+  }
+
+  .info-value {
+    font-size: 13px;
+  }
+
+  .complaint-detail-section {
+    margin-top: 17px;
+  }
+
+  .complaint-details-page .complaint-description {
+    padding: 12px 13px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .complaint-detail-section h3,
+  .timeline-title {
+    font-size: 15px;
+  }
+
+  .timeline-item {
+    gap: 13px;
+  }
+
+  .timeline-item strong {
+    font-size: 13px;
+  }
+
+  .timeline-item span {
+    font-size: 11px;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 380px) {
+
+  .complaints-page {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .complaint-card {
+    padding: 15px;
+  }
+
+  .complaint-card h3 {
+    font-size: 16px;
+  }
+
+  .complaints-page .complaint-meta {
+    font-size: 11px;
+  }
+
+  .complaint-details-page {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .complaint-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .complaint-details-title-row h1 {
+    font-size: 18px;
+  }
+
+  .complaint-details-card {
+    padding: 14px;
+  }
+}
+/* -----------------------------------------
+   Complaint Card Footer
+----------------------------------------- */
+
+.complaints-page .complaint-card-footer {
+  margin-top: 16px;
+  padding-top: 13px;
+
+  border-top: 1px solid #f1f1f1;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 10px;
+}
+
+.complaints-page .complaint-updated {
+  font-size: 12px;
+  color: #888;
+}
+
+.complaints-page .view-details {
+  font-size: 13px;
+  color: #1565c0;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.complaint-card:focus-visible {
+  outline: 3px solid rgba(21, 101, 192, 0.18);
+  outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+
+  .complaints-page .complaint-card-footer {
+    align-items: flex-end;
+  }
+
+  .complaints-page .complaint-updated {
+    font-size: 11px;
+  }
+
+  .complaints-page .view-details {
+    font-size: 12px;
+  }
+
+}
+
+.complaints-page .complaint-card-footer {
+  margin-top: 16px;
+  padding-top: 13px;
+  border-top: 1px solid #f1f1f1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.complaints-page .complaint-updated {
+  font-size: 12px;
+  color: #888;
+}
+
+.complaints-page .view-details {
+  font-size: 13px;
+  color: #1565c0;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.complaint-card:focus-visible {
+  outline: 3px solid rgba(21, 101, 192, 0.18);
+  outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+  .complaints-page .complaint-card-footer {
+    align-items: flex-end;
+  }
+
+  .complaints-page .complaint-updated {
+    font-size: 11px;
+  }
+
+  .complaints-page .view-details {
+    font-size: 12px;
+  }
+}
+
+.complaints-summary {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin: 18px 0 22px;
+  padding: 16px 20px;
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+}
+
+.summary-item {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.summary-count {
+  font-size: 20px;
+  font-weight: 700;
+  color: #222;
+}
+
+.summary-label {
+  font-size: 13px;
+  color: #777;
+}
+
+.summary-divider {
+  width: 1px;
+  height: 24px;
+  background: #e5e5e5;
+}
+
+@media (max-width: 600px) {
+  .complaints-summary {
+    gap: 12px;
+    padding: 14px;
+    justify-content: space-between;
+  }
+
+  .summary-item {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .summary-count {
+    font-size: 18px;
+  }
+
+  .summary-label {
+    font-size: 11px;
+  }
+
+  .summary-divider {
+    height: 30px;
+  }
+}
