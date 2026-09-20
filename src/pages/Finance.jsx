@@ -2,30 +2,35 @@ import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../supabaseClient'
 import './Finance.css'
 
-const APARTMENT_ID = '6a50bb64-c6ea-480b-a4e3-e8677c894a99'
+const APARTMENT_ID =
+  '6a50bb64-c6ea-480b-a4e3-e8677c894a99'
 
 const MONTHS = [
-  { value: 0, label: 'January' },
-  { value: 1, label: 'February' },
-  { value: 2, label: 'March' },
-  { value: 3, label: 'April' },
-  { value: 4, label: 'May' },
-  { value: 5, label: 'June' },
-  { value: 6, label: 'July' },
-  { value: 7, label: 'August' },
-  { value: 8, label: 'September' },
-  { value: 9, label: 'October' },
-  { value: 10, label: 'November' },
-  { value: 11, label: 'December' }
+  { value: 1, label: 'January' },
+  { value: 2, label: 'February' },
+  { value: 3, label: 'March' },
+  { value: 4, label: 'April' },
+  { value: 5, label: 'May' },
+  { value: 6, label: 'June' },
+  { value: 7, label: 'July' },
+  { value: 8, label: 'August' },
+  { value: 9, label: 'September' },
+  { value: 10, label: 'October' },
+  { value: 11, label: 'November' },
+  { value: 12, label: 'December' }
 ]
 
-function Finance({ user }) {
-  const today = new Date()
+function Finance({ user, onSelectIncoming }) {
+  const currentDate = new Date()
 
-  const [selectedMonth, setSelectedMonth] = useState(today.getMonth())
-  const [selectedYear, setSelectedYear] = useState(today.getFullYear())
+  const [selectedMonth, setSelectedMonth] =
+    useState(currentDate.getMonth() + 1)
+
+  const [selectedYear, setSelectedYear] =
+    useState(currentDate.getFullYear())
 
   const [expenses, setExpenses] = useState([])
+  const [incoming, setIncoming] = useState([])
   const [fundBalances, setFundBalances] = useState([])
 
   const [loading, setLoading] = useState(true)
@@ -42,7 +47,11 @@ function Finance({ user }) {
       setLoading(true)
       setError('')
 
-      const [expensesResult, fundsResult] = await Promise.all([
+      const [
+        expensesResult,
+        incomingResult,
+        balancesResult
+      ] = await Promise.all([
         supabase
           .from('expenses')
           .select(`
@@ -65,7 +74,34 @@ function Finance({ user }) {
             )
           `)
           .eq('apartment_id', APARTMENT_ID)
-          .order('expense_date', { ascending: false }),
+          .order('expense_date', {
+            ascending: false
+          }),
+
+        supabase
+          .from('financial_transactions')
+          .select(`
+            id,
+            apartment_id,
+            fund_id,
+            transaction_date,
+            transaction_type,
+            category,
+            description,
+            amount,
+            resident_payment_id,
+            created_at,
+            funds (
+              id,
+              name,
+              fund_type
+            )
+          `)
+          .eq('apartment_id', APARTMENT_ID)
+          .eq('transaction_type', 'CREDIT')
+          .order('transaction_date', {
+            ascending: false
+          }),
 
         supabase
           .from('v_fund_balances')
@@ -83,15 +119,27 @@ function Finance({ user }) {
         throw expensesResult.error
       }
 
-      if (fundsResult.error) {
-        throw fundsResult.error
+      if (incomingResult.error) {
+        throw incomingResult.error
+      }
+
+      if (balancesResult.error) {
+        throw balancesResult.error
       }
 
       setExpenses(expensesResult.data || [])
-      setFundBalances(fundsResult.data || [])
+      setIncoming(incomingResult.data || [])
+      setFundBalances(balancesResult.data || [])
     } catch (err) {
-      console.error('Unable to load finance data:', err)
-      setError(err.message || 'Unable to load finance information')
+      console.error(
+        'Unable to load finance data:',
+        err
+      )
+
+      setError(
+        err.message ||
+        'Unable to load financial information'
+      )
     } finally {
       setLoading(false)
     }
@@ -106,98 +154,254 @@ function Finance({ user }) {
   }
 
   function formatDate(dateString) {
-    if (!dateString) return '-'
+    if (!dateString) {
+      return '-'
+    }
 
-    const date = new Date(dateString)
+    const date = new Date(
+      `${dateString}T00:00:00`
+    )
 
     if (Number.isNaN(date.getTime())) {
       return '-'
     }
 
-    return date.toLocaleDateString('en-IN', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric'
-    })
+    return date.toLocaleDateString(
+      'en-IN',
+      {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      }
+    )
   }
 
-  const maintenanceFundBalance = useMemo(() => {
-    const fund = fundBalances.find(
-      fund => fund.fund_type === 'MAINTENANCE'
+  function getDateMonth(dateString) {
+    if (!dateString) {
+      return null
+    }
+
+    const date = new Date(
+      `${dateString}T00:00:00`
     )
 
-    return Number(fund?.current_balance || 0)
-  }, [fundBalances])
+    if (Number.isNaN(date.getTime())) {
+      return null
+    }
 
-  const corpusFundBalance = useMemo(() => {
-    const fund = fundBalances.find(
-      fund => fund.fund_type === 'CORPUS'
+    return date.getMonth() + 1
+  }
+
+  function getDateYear(dateString) {
+    if (!dateString) {
+      return null
+    }
+
+    const date = new Date(
+      `${dateString}T00:00:00`
     )
 
-    return Number(fund?.current_balance || 0)
-  }, [fundBalances])
+    if (Number.isNaN(date.getTime())) {
+      return null
+    }
 
-  const currentBalance = useMemo(() => {
-    return maintenanceFundBalance + corpusFundBalance
-  }, [maintenanceFundBalance, corpusFundBalance])
+    return date.getFullYear()
+  }
 
   /*
-   * Expenses for selected month and year
+   * =========================
+   * FUND BALANCES
+   * =========================
    */
-  const filteredExpenses = useMemo(() => {
-    return expenses.filter(expense => {
-      if (!expense.expense_date) return false
 
-      const date = new Date(`${expense.expense_date}T00:00:00`)
+  const maintenanceFund = useMemo(() => {
+    return (
+      fundBalances.find(
+        fund =>
+          fund.fund_type === 'MAINTENANCE'
+      ) || null
+    )
+  }, [fundBalances])
+
+  const corpusFund = useMemo(() => {
+    return (
+      fundBalances.find(
+        fund =>
+          fund.fund_type === 'CORPUS'
+      ) || null
+    )
+  }, [fundBalances])
+
+  const maintenanceBalance = Number(
+    maintenanceFund?.current_balance || 0
+  )
+
+  const corpusBalance = Number(
+    corpusFund?.current_balance || 0
+  )
+
+  const totalBalance =
+    maintenanceBalance + corpusBalance
+
+  /*
+   * =========================
+   * FILTERED INCOMING
+   * =========================
+   */
+
+  const filteredIncoming = useMemo(() => {
+    return incoming.filter(transaction => {
+      const month = getDateMonth(
+        transaction.transaction_date
+      )
+
+      const year = getDateYear(
+        transaction.transaction_date
+      )
 
       return (
-        date.getMonth() === selectedMonth &&
-        date.getFullYear() === selectedYear
+        month === selectedMonth &&
+        year === selectedYear
       )
     })
-  }, [expenses, selectedMonth, selectedYear])
+  }, [
+    incoming,
+    selectedMonth,
+    selectedYear
+  ])
 
   /*
-   * Total expenses for selected month/year
+   * =========================
+   * FILTERED EXPENSES
+   * =========================
    */
-  const selectedMonthExpenses = useMemo(() => {
-    return filteredExpenses.reduce(
-      (total, expense) => total + Number(expense.amount || 0),
-      0
-    )
-  }, [filteredExpenses])
+
+  const filteredExpenses = useMemo(() => {
+    return expenses.filter(expense => {
+      const month = getDateMonth(
+        expense.expense_date
+      )
+
+      const year = getDateYear(
+        expense.expense_date
+      )
+
+      return (
+        month === selectedMonth &&
+        year === selectedYear
+      )
+    })
+  }, [
+    expenses,
+    selectedMonth,
+    selectedYear
+  ])
 
   /*
-   * Show only 5 most recent expenses
+   * =========================
+   * MONTH TOTALS
+   * =========================
    */
-  const recentExpenses = useMemo(() => {
-    return filteredExpenses.slice(0, 5)
-  }, [filteredExpenses])
+
+  const selectedMonthIncoming =
+    useMemo(() => {
+      return filteredIncoming.reduce(
+        (total, transaction) =>
+          total +
+          Number(transaction.amount || 0),
+        0
+      )
+    }, [filteredIncoming])
+
+  const selectedMonthExpenses =
+    useMemo(() => {
+      return filteredExpenses.reduce(
+        (total, expense) =>
+          total +
+          Number(expense.amount || 0),
+        0
+      )
+    }, [filteredExpenses])
 
   /*
-   * Available years for the dropdown.
-   * Always include the current year.
+   * =========================
+   * RECENT RECORDS
+   * =========================
    */
+
+  const recentIncoming =
+    filteredIncoming.slice(0, 5)
+
+  const recentExpenses =
+    filteredExpenses.slice(0, 5)
+
+  /*
+   * =========================
+   * AVAILABLE YEARS
+   * =========================
+   */
+
   const years = useMemo(() => {
-    const expenseYears = expenses
-      .map(expense => {
-        if (!expense.expense_date) return null
+    const yearSet = new Set()
 
-        const date = new Date(`${expense.expense_date}T00:00:00`)
+    yearSet.add(currentDate.getFullYear())
 
-        return Number.isNaN(date.getTime())
-          ? null
-          : date.getFullYear()
-      })
-      .filter(Boolean)
+    incoming.forEach(transaction => {
+      const year = getDateYear(
+        transaction.transaction_date
+      )
 
-    const uniqueYears = [...new Set([
-      today.getFullYear(),
-      ...expenseYears
-    ])]
+      if (year) {
+        yearSet.add(year)
+      }
+    })
 
-    return uniqueYears.sort((a, b) => b - a)
-  }, [expenses])
+    expenses.forEach(expense => {
+      const year = getDateYear(
+        expense.expense_date
+      )
+
+      if (year) {
+        yearSet.add(year)
+      }
+    })
+
+    return Array.from(yearSet).sort(
+      (a, b) => b - a
+    )
+  }, [incoming, expenses])
+
+  /*
+   * =========================
+   * LOADING
+   * =========================
+   */
+
+  if (loading) {
+    return (
+      <div className="finance-page">
+        <div className="finance-loading">
+          Loading financial information...
+        </div>
+      </div>
+    )
+  }
+
+  /*
+   * =========================
+   * ERROR
+   * =========================
+   */
+
+  if (error) {
+    return (
+      <div className="finance-page">
+        <div className="finance-error">
+          {error}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="finance-page">
@@ -209,269 +413,388 @@ function Finance({ user }) {
       <div className="finance-header">
         <div>
           <h1>Finance</h1>
-          <p>Apartment financial transparency</p>
+
+          <p>
+            Apartment financial transparency
+          </p>
         </div>
       </div>
 
-      {error && (
-        <div className="finance-error">
-          {error}
+      {/* =========================
+          FUND BALANCES
+      ========================== */}
+
+      <div className="finance-summary">
+
+        <div className="finance-summary-card">
+          <span className="finance-summary-label">
+            Maintenance Fund
+          </span>
+
+          <strong className="finance-summary-value">
+            {formatAmount(
+              maintenanceBalance
+            )}
+          </strong>
+
+          <span className="finance-summary-note">
+            Current balance
+          </span>
         </div>
-      )}
 
-      {loading ? (
-        <div className="finance-loading">
-          Loading financial information...
+        <div className="finance-summary-card">
+          <span className="finance-summary-label">
+            Corpus Fund
+          </span>
+
+          <strong className="finance-summary-value">
+            {formatAmount(
+              corpusBalance
+            )}
+          </strong>
+
+          <span className="finance-summary-note">
+            Current balance
+          </span>
         </div>
-      ) : (
-        <>
-          {/* =========================
-              FUND SUMMARY
-          ========================== */}
 
-          <div className="finance-summary">
+        <div className="finance-summary-card">
+          <span className="finance-summary-label">
+            Total Balance
+          </span>
 
-            <div className="finance-summary-card">
-              <span className="finance-summary-label">
-                Maintenance Fund
-              </span>
+          <strong className="finance-summary-value">
+            {formatAmount(
+              totalBalance
+            )}
+          </strong>
 
-              <strong className="finance-summary-value">
-                {formatAmount(maintenanceFundBalance)}
-              </strong>
+          <span className="finance-summary-note">
+            All funds
+          </span>
+        </div>
 
-              <span className="finance-summary-note">
-                Current available balance
-              </span>
-            </div>
+      </div>
 
-            <div className="finance-summary-card">
-              <span className="finance-summary-label">
-                Corpus Fund
-              </span>
+      {/* =========================
+          MONTH / YEAR FILTER
+      ========================== */}
 
-              <strong className="finance-summary-value">
-                {formatAmount(corpusFundBalance)}
-              </strong>
+      <div className="finance-filter-card">
 
-              <span className="finance-summary-note">
-                Current available balance
-              </span>
-            </div>
+        <div className="finance-filter-title">
+          <div>
+            <h2>Financial Activity</h2>
 
-            <div className="finance-summary-card">
-              <span className="finance-summary-label">
-                Total Balance
-              </span>
+            <p>
+              View incoming payments and expenses
+              for a specific month.
+            </p>
+          </div>
+        </div>
 
-              <strong className="finance-summary-value">
-                {formatAmount(currentBalance)}
-              </strong>
+        <div className="finance-filter-controls">
 
-              <span className="finance-summary-note">
-                Maintenance + Corpus
-              </span>
-            </div>
+          <div className="finance-filter-field">
 
-            <div className="finance-summary-card">
-              <span className="finance-summary-label">
-                Selected Month
-              </span>
+            <label htmlFor="finance-month">
+              Month
+            </label>
 
-              <strong className="finance-summary-value">
-                {formatAmount(selectedMonthExpenses)}
-              </strong>
-
-              <span className="finance-summary-note">
-                {MONTHS[selectedMonth].label} {selectedYear}
-              </span>
-            </div>
+            <select
+              id="finance-month"
+              value={selectedMonth}
+              onChange={event =>
+                setSelectedMonth(
+                  Number(event.target.value)
+                )
+              }
+            >
+              {MONTHS.map(month => (
+                <option
+                  key={month.value}
+                  value={month.value}
+                >
+                  {month.label}
+                </option>
+              ))}
+            </select>
 
           </div>
 
-          {/* =========================
-              EXPENSE FILTER
-          ========================== */}
+          <div className="finance-filter-field">
 
-          <div className="finance-filter-card">
+            <label htmlFor="finance-year">
+              Year
+            </label>
 
-            <div className="finance-filter-title">
-              <div>
-                <h2>Expenses</h2>
-                <p>
-                  View apartment expenses by month
-                </p>
-              </div>
-            </div>
-
-            <div className="finance-filter-controls">
-
-              <div className="finance-filter-field">
-                <label htmlFor="expense-month">
-                  Month
-                </label>
-
-                <select
-                  id="expense-month"
-                  value={selectedMonth}
-                  onChange={event =>
-                    setSelectedMonth(Number(event.target.value))
-                  }
+            <select
+              id="finance-year"
+              value={selectedYear}
+              onChange={event =>
+                setSelectedYear(
+                  Number(event.target.value)
+                )
+              }
+            >
+              {years.map(year => (
+                <option
+                  key={year}
+                  value={year}
                 >
-                  {MONTHS.map(month => (
-                    <option
-                      key={month.value}
-                      value={month.value}
-                    >
-                      {month.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="finance-filter-field">
-                <label htmlFor="expense-year">
-                  Year
-                </label>
-
-                <select
-                  id="expense-year"
-                  value={selectedYear}
-                  onChange={event =>
-                    setSelectedYear(Number(event.target.value))
-                  }
-                >
-                  {years.map(year => (
-                    <option
-                      key={year}
-                      value={year}
-                    >
-                      {year}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-            </div>
+                  {year}
+                </option>
+              ))}
+            </select>
 
           </div>
 
-          {/* =========================
-              EXPENSE LIST
-          ========================== */}
+        </div>
 
-          <div className="finance-section">
+      </div>
 
-            <div className="finance-section-header">
-              <div>
-                <h2>
-                  Recent Expenses
-                </h2>
+      {/* =========================
+          INCOMING
+      ========================== */}
 
-                <p>
-                  {MONTHS[selectedMonth].label} {selectedYear}
-                </p>
-              </div>
+      <section className="finance-section">
 
-              <span className="finance-expense-count">
-                {filteredExpenses.length} expense
-                {filteredExpenses.length !== 1 ? 's' : ''}
-              </span>
+        <div className="finance-section-header">
+
+          <div>
+            <h2>Incoming</h2>
+
+            <p>
+              Money received by the apartment
+            </p>
+          </div>
+
+          <strong className="finance-section-total">
+            {formatAmount(
+              selectedMonthIncoming
+            )}
+          </strong>
+
+        </div>
+
+        {recentIncoming.length === 0 ? (
+
+          <div className="finance-empty">
+            <div className="finance-empty-icon">
+              ↓
             </div>
 
-            {recentExpenses.length === 0 ? (
+            <h3>
+              No incoming transactions
+            </h3>
 
-              <div className="finance-empty">
+            <p>
+              There are no incoming transactions
+              for the selected month.
+            </p>
+          </div>
 
-                <div className="finance-empty-icon">
-                  ₹
-                </div>
+        ) : (
 
-                <h3>
-                  No expenses recorded
-                </h3>
+          <div className="finance-expense-list">
 
-                <p>
-                  No expenses were recorded for{' '}
-                  {MONTHS[selectedMonth].label} {selectedYear}.
-                </p>
+            {recentIncoming.map(
+              transaction => (
 
-              </div>
+                <button
+                  type="button"
+                  className="finance-expense-card finance-income-card"
+                  key={transaction.id}
+                  onClick={() => {
+                    if (onSelectIncoming) {
+                      onSelectIncoming(
+                        transaction.id
+                      )
+                    }
+                  }}
+                >
 
-            ) : (
+                  <div className="finance-expense-main">
 
-              <>
-                <div className="finance-expense-list">
+                    <div className="finance-income-icon">
+                      +
+                    </div>
 
-                  {recentExpenses.map(expense => (
+                    <div className="finance-expense-info">
 
-                    <div
-                      className="finance-expense-card"
-                      key={expense.id}
-                    >
+                      <h3>
+                        {transaction.category}
+                      </h3>
 
-                      <div className="finance-expense-main">
+                      <p className="finance-expense-description">
+                        {transaction.description ||
+                          'No description'}
+                      </p>
 
-                        <div className="finance-expense-icon">
-                          ₹
-                        </div>
+                      <div className="finance-expense-meta">
 
-                        <div className="finance-expense-info">
+                        <span>
+                          {formatDate(
+                            transaction.transaction_date
+                          )}
+                        </span>
 
-                          <h3>
-                            {expense.category}
-                          </h3>
+                        <span>
+                          {transaction.funds?.name ||
+                            'Unknown Fund'}
+                        </span>
 
-                          <p className="finance-expense-description">
-                            {expense.description || 'No description'}
-                          </p>
-
-                          <div className="finance-expense-meta">
-
-                            <span>
-                              {formatDate(expense.expense_date)}
-                            </span>
-
-                            <span>
-                              {expense.funds?.name || 'Unknown Fund'}
-                            </span>
-
-                            {expense.payment_method && (
-                              <span>
-                                {expense.payment_method}
-                              </span>
-                            )}
-
-                          </div>
-
-                        </div>
-
-                      </div>
-
-                      <div className="finance-expense-amount">
-                        {formatAmount(expense.amount)}
                       </div>
 
                     </div>
 
-                  ))}
-
-                </div>
-
-                {filteredExpenses.length > 5 && (
-                  <div className="finance-more-expenses">
-                    Showing the 5 most recent expenses
-                    out of {filteredExpenses.length}
                   </div>
-                )}
-              </>
 
+                  <div className="finance-income-amount">
+                    +
+                    {formatAmount(
+                      transaction.amount
+                    )}
+                  </div>
+
+                </button>
+
+              )
             )}
 
           </div>
 
-        </>
-      )}
+        )}
+
+        {filteredIncoming.length > 5 && (
+          <div className="finance-more-expenses">
+            Showing the latest 5 incoming
+            transactions.
+          </div>
+        )}
+
+      </section>
+
+      {/* =========================
+          EXPENSES
+      ========================== */}
+
+      <section className="finance-section">
+
+        <div className="finance-section-header">
+
+          <div>
+            <h2>Expenses</h2>
+
+            <p>
+              Money spent by the apartment
+            </p>
+          </div>
+
+          <strong className="finance-section-total">
+            {formatAmount(
+              selectedMonthExpenses
+            )}
+          </strong>
+
+        </div>
+
+        {recentExpenses.length === 0 ? (
+
+          <div className="finance-empty">
+
+            <div className="finance-empty-icon">
+              ₹
+            </div>
+
+            <h3>
+              No expenses
+            </h3>
+
+            <p>
+              There are no expenses for the
+              selected month.
+            </p>
+
+          </div>
+
+        ) : (
+
+          <div className="finance-expense-list">
+
+            {recentExpenses.map(
+              expense => (
+
+                <div
+                  className="finance-expense-card"
+                  key={expense.id}
+                >
+
+                  <div className="finance-expense-main">
+
+                    <div className="finance-expense-icon">
+                      ₹
+                    </div>
+
+                    <div className="finance-expense-info">
+
+                      <h3>
+                        {expense.category}
+                      </h3>
+
+                      <p className="finance-expense-description">
+                        {expense.description ||
+                          'No description'}
+                      </p>
+
+                      <div className="finance-expense-meta">
+
+                        <span>
+                          {formatDate(
+                            expense.expense_date
+                          )}
+                        </span>
+
+                        <span>
+                          {expense.funds?.name ||
+                            'Unknown Fund'}
+                        </span>
+
+                        {expense.payment_method && (
+                          <span>
+                            {expense.payment_method}
+                          </span>
+                        )}
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div className="finance-expense-amount">
+                    -
+                    {formatAmount(
+                      expense.amount
+                    )}
+                  </div>
+
+                </div>
+
+              )
+            )}
+
+          </div>
+
+        )}
+
+        {filteredExpenses.length > 5 && (
+          <div className="finance-more-expenses">
+            Showing the latest 5 expenses.
+          </div>
+        )}
+
+      </section>
 
     </div>
   )

@@ -13,6 +13,7 @@ import Profile from './pages/Profile'
 import BillDetails from './pages/BillDetails'
 import ComplaintDetails from './pages/ComplaintDetails'
 import Finance from './pages/Finance'
+import IncomingDetails from './pages/IncomingDetails'
 
 import './App.css'
 
@@ -23,7 +24,7 @@ function App() {
   const [activePage, setActivePage] = useState('home')
 
   const [selectedBillId, setSelectedBillId] = useState(null)
-
+const [selectedIncomingId, setSelectedIncomingId] = useState(null)
   const [selectedComplaintId, setSelectedComplaintId] =
     useState(null)
 
@@ -83,6 +84,8 @@ function App() {
     setSelectedBillId(null)
 
     setSelectedComplaintId(null)
+
+    setSelectedIncomingId(null)
   }
 
   function goToPage(page) {
@@ -99,6 +102,10 @@ function App() {
     if (page !== 'complaints') {
       setSelectedComplaintId(null)
     }
+
+    if (page !== 'finance') {
+  setSelectedIncomingId(null)
+}
   }
 
   function renderPage() {
@@ -178,8 +185,25 @@ function App() {
           />
         )
 
-        case 'finance':
-  return <Finance user={user} />
+case 'finance':
+  if (selectedIncomingId) {
+    return (
+      <IncomingDetails
+        transactionId={selectedIncomingId}
+        user={user}
+        onBack={() => {
+          setSelectedIncomingId(null)
+        }}
+      />
+    )
+  }
+
+  return (
+    <Finance
+      user={user}
+      onSelectIncoming={setSelectedIncomingId}
+    />
+  )
 
       /* =========================
          MORE
