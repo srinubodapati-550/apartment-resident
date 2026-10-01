@@ -117,9 +117,10 @@ const [selectedIncomingId, setSelectedIncomingId] = useState(null)
 
       case 'home':
         return (
-          <Home
-            user={user}
-          />
+<Home
+  user={user}
+  onNavigate={goToPage}
+/>
         )
 
       /* =========================
