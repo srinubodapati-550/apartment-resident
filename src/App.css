@@ -4073,3 +4073,19 @@ button:disabled {
   }
 
 }
+
+.more-menu button {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.more-menu-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  min-width: 28px;
+  font-size: 20px;
+  line-height: 1;
+}

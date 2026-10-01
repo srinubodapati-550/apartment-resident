@@ -21,7 +21,7 @@ function More({
 
         <button onClick={() => onNavigate('notifications')}>
           🔔
-          <span>Notifications</span>
+          <span>  Notifications</span>
         </button>
 
         <button onClick={() => onNavigate('profile')}>
