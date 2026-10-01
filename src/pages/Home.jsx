@@ -43,28 +43,30 @@ function Home({ user, onNavigate }) {
        * ==========================================
        */
 
-      const { data: memberData, error: memberError } =
-        await supabase
-          .from('flat_members')
-          .select(`
-            flat_id,
-            flats (
+      const {
+        data: memberData,
+        error: memberError
+      } = await supabase
+        .from('flat_members')
+        .select(`
+          flat_id,
+          flats (
+            id,
+            flat_number,
+            floor_number,
+            flat_type,
+            area_sqft,
+            status,
+            blocks (
               id,
-              flat_number,
-              floor_number,
-              flat_type,
-              area_sqft,
-              status,
-              blocks (
-                id,
-                name,
-                apartment_id
-              )
+              name,
+              apartment_id
             )
-          `)
-          .eq('user_id', user.id)
-          .limit(1)
-          .maybeSingle()
+          )
+        `)
+        .eq('user_id', user.id)
+        .limit(1)
+        .maybeSingle()
 
       if (memberError) {
         throw memberError
@@ -164,69 +166,70 @@ function Home({ user, onNavigate }) {
        * ==========================================
        * NOTICES
        * ==========================================
-       *
-       * Use the resident's apartment ID.
-       * Published notices only.
        */
-
-      let noticeQuery =
-        supabase
-          .from('notices')
-          .select(`
-            id,
-            title,
-            description,
-            priority,
-            published_at,
-            expiry_date,
-            status
-          `)
-          .eq(
-            'apartment_id',
-            APARTMENT_ID
-          )
-          .eq(
-            'status',
-            'PUBLISHED'
-          )
-          .order(
-            'published_at',
-            {
-              ascending: false
-            }
-          )
-          .limit(10)
 
       const {
         data: noticeData,
         error: noticeError
-      } = await noticeQuery
+      } = await supabase
+        .from('notices')
+        .select(`
+          id,
+          title,
+          description,
+          priority,
+          published_at,
+          expiry_date,
+          status
+        `)
+        .eq(
+          'apartment_id',
+          APARTMENT_ID
+        )
+        .eq(
+          'status',
+          'PUBLISHED'
+        )
+        .order(
+          'published_at',
+          {
+            ascending: false
+          }
+        )
+        .limit(10)
 
       if (noticeError) {
         throw noticeError
       }
 
       /*
-       * Remove notices whose expiry date
-       * has already passed.
+       * Remove expired notices.
        */
 
       const today = new Date()
-      today.setHours(0, 0, 0, 0)
+
+      today.setHours(
+        0,
+        0,
+        0,
+        0
+      )
 
       const activeNotices =
-        (noticeData || []).filter(notice => {
-          if (!notice.expiry_date) {
-            return true
+        (noticeData || []).filter(
+          notice => {
+            if (!notice.expiry_date) {
+              return true
+            }
+
+            const expiryDate =
+              new Date(
+                `${notice.expiry_date}T00:00:00`
+              )
+
+            return expiryDate >= today
           }
-
-          const expiryDate =
-            new Date(
-              `${notice.expiry_date}T00:00:00`
-            )
-
-          return expiryDate >= today
-        })
+        )
 
       setNotices(
         activeNotices.slice(0, 3)
@@ -237,12 +240,7 @@ function Home({ user, onNavigate }) {
        * FUND BALANCES
        * ==========================================
        *
-       * IMPORTANT:
-       * This is the SAME source and field
-       * used by Finance.jsx.
-       *
-       * v_fund_balances
-       * current_balance
+       * Same source used by Finance.jsx.
        */
 
       const {
@@ -282,15 +280,13 @@ function Home({ user, onNavigate }) {
 
       setMaintenanceBalance(
         Number(
-          maintenanceFund?.current_balance ||
-          0
+          maintenanceFund?.current_balance || 0
         )
       )
 
       setCorpusBalance(
         Number(
-          corpusFund?.current_balance ||
-          0
+          corpusFund?.current_balance || 0
         )
       )
 
@@ -301,7 +297,7 @@ function Home({ user, onNavigate }) {
       )
 
       setError(
-        err.message ||
+        err?.message ||
         'Unable to load home information.'
       )
     } finally {
@@ -323,7 +319,9 @@ function Home({ user, onNavigate }) {
         currency: 'INR',
         maximumFractionDigits: 2
       }
-    ).format(Number(amount || 0))
+    ).format(
+      Number(amount || 0)
+    )
   }
 
   function formatMonth(dateString) {
@@ -331,11 +329,16 @@ function Home({ user, onNavigate }) {
       return '-'
     }
 
-    const date = new Date(
-      `${dateString}T00:00:00`
-    )
+    const date =
+      new Date(
+        `${dateString}T00:00:00`
+      )
 
-    if (Number.isNaN(date.getTime())) {
+    if (
+      Number.isNaN(
+        date.getTime()
+      )
+    ) {
       return '-'
     }
 
@@ -353,11 +356,14 @@ function Home({ user, onNavigate }) {
       return '-'
     }
 
-    const date = new Date(
-      dateString
-    )
+    const date =
+      new Date(dateString)
 
-    if (Number.isNaN(date.getTime())) {
+    if (
+      Number.isNaN(
+        date.getTime()
+      )
+    ) {
       return '-'
     }
 
@@ -373,38 +379,18 @@ function Home({ user, onNavigate }) {
 
   function getBillStatusClass(status) {
     return (
-      `home-bill-status ` +
-      `${status?.toLowerCase() || ''}`
+      `home-bill-status ${
+        status?.toLowerCase() || ''
+      }`
     )
   }
 
-  function getPriorityStyle(priority) {
-    switch (priority) {
-      case 'URGENT':
-        return {
-          background: '#fee2e2',
-          color: '#b91c1c'
-        }
-
-      case 'HIGH':
-        return {
-          background: '#ffedd5',
-          color: '#c2410c'
-        }
-
-      case 'LOW':
-        return {
-          background: '#f1f5f9',
-          color: '#475569'
-        }
-
-      case 'NORMAL':
-      default:
-        return {
-          background: '#e0f2fe',
-          color: '#0369a1'
-        }
-    }
+  function getPriorityClass(priority) {
+    return (
+      `home-priority ${
+        priority?.toLowerCase() || 'normal'
+      }`
+    )
   }
 
   /*
@@ -415,15 +401,15 @@ function Home({ user, onNavigate }) {
 
   if (loading) {
     return (
-      <div className="page">
-        <div
-          style={{
-            padding: '40px 20px',
-            textAlign: 'center',
-            color: '#64748b'
-          }}
-        >
-          Loading your home...
+      <div className="page home-page">
+        <div className="home-loading">
+          <div className="home-loading-icon">
+            🏠
+          </div>
+
+          <div>
+            Loading your home...
+          </div>
         </div>
       </div>
     )
@@ -437,32 +423,28 @@ function Home({ user, onNavigate }) {
 
   if (error) {
     return (
-      <div className="page">
+      <div className="page home-page">
 
-        <div
-          style={{
-            background: '#fee2e2',
-            border: '1px solid #fecaca',
-            color: '#b91c1c',
-            borderRadius: '10px',
-            padding: '16px',
-            marginBottom: '20px'
-          }}
-        >
-          {error}
+        <div className="home-error">
+          <div className="home-error-icon">
+            ⚠️
+          </div>
+
+          <div>
+            <strong>
+              Unable to load home
+            </strong>
+
+            <p>
+              {error}
+            </p>
+          </div>
         </div>
 
         <button
           type="button"
+          className="home-retry-button"
           onClick={loadHomeData}
-          style={{
-            padding: '10px 16px',
-            borderRadius: '8px',
-            border: 'none',
-            background: '#2563eb',
-            color: '#fff',
-            cursor: 'pointer'
-          }}
         >
           Try Again
         </button>
@@ -472,98 +454,64 @@ function Home({ user, onNavigate }) {
   }
 
   return (
-    <div className="page">
+    <div className="page home-page">
 
       {/* ========================================
           WELCOME
       ========================================= */}
 
-      <div
-        style={{
-          marginBottom: '20px'
-        }}
-      >
-        <h1
-          style={{
-            marginBottom: '6px'
-          }}
-        >
-          Hello, {user.full_name} 👋
-        </h1>
+      <section className="home-welcome">
 
-        <p
-          style={{
-            margin: 0,
-            color: '#64748b'
-          }}
-        >
-          Welcome to your apartment resident
-          portal.
-        </p>
-      </div>
+        <div>
+          <h1>
+            Hello, {user?.full_name || 'Resident'} 👋
+          </h1>
+
+          <p>
+            Welcome to your apartment resident
+            portal.
+          </p>
+        </div>
+
+      </section>
 
 
       {/* ========================================
-          QUICK SUMMARY CARDS
+          QUICK SUMMARY
       ========================================= */}
 
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns:
-            'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: '14px',
-          marginBottom: '20px'
-        }}
-      >
+      <section className="home-summary-grid">
 
         {/* MY FLAT */}
 
         <button
           type="button"
+          className="home-summary-card"
           onClick={() =>
             onNavigate &&
             onNavigate('flat')
           }
-          style={{
-            textAlign: 'left',
-            border: '1px solid #e2e8f0',
-            background: '#fff',
-            borderRadius: '12px',
-            padding: '18px',
-            cursor: 'pointer'
-          }}
         >
 
-          <div
-            style={{
-              fontSize: '26px',
-              marginBottom: '8px'
-            }}
-          >
+          <div className="home-card-icon">
             🏢
           </div>
 
-          <div
-            style={{
-              fontWeight: 600,
-              fontSize: '16px'
-            }}
-          >
+          <div className="home-summary-title">
             My Flat
           </div>
 
-          <div
-            style={{
-              marginTop: '5px',
-              color: '#64748b',
-              fontSize: '14px'
-            }}
-          >
+          <div className="home-summary-value">
             {flat
               ? `Flat ${flat.flat_number}`
               : 'No flat assigned'}
           </div>
+
+          {flat?.blocks?.name && (
+            <div className="home-summary-subtitle">
+              {flat.blocks.name}
+            </div>
+          )}
 
         </button>
 
@@ -572,82 +520,49 @@ function Home({ user, onNavigate }) {
 
         <button
           type="button"
+          className="home-summary-card"
           onClick={() =>
             onNavigate &&
             onNavigate('bills')
           }
-          style={{
-            textAlign: 'left',
-            border: '1px solid #e2e8f0',
-            background: '#fff',
-            borderRadius: '12px',
-            padding: '18px',
-            cursor: 'pointer'
-          }}
         >
 
-          <div
-            style={{
-              fontSize: '26px',
-              marginBottom: '8px'
-            }}
-          >
+          <div className="home-card-icon">
             💰
           </div>
 
-          <div
-            style={{
-              fontWeight: 600,
-              fontSize: '16px'
-            }}
-          >
+          <div className="home-summary-title">
             Latest Bill
           </div>
 
           {latestBill ? (
-
-            <div
-              style={{
-                marginTop: '5px'
-              }}
-            >
-
-              <div
-                style={{
-                  color: '#64748b',
-                  fontSize: '13px'
-                }}
-              >
-                {formatMonth(
-                  latestBill.bill_month
-                )}
-              </div>
-
-              <div
-                style={{
-                  fontWeight: 600,
-                  marginTop: '3px'
-                }}
-              >
+            <>
+              <div className="home-summary-value">
                 {formatAmount(
                   latestBill.amount
                 )}
               </div>
 
-            </div>
+              <div className="home-summary-subtitle">
+                {formatMonth(
+                  latestBill.bill_month
+                )}
+              </div>
 
+              {latestBill.status && (
+                <span
+                  className={getBillStatusClass(
+                    latestBill.status
+                  )}
+                >
+                  {latestBill.status}
+                </span>
+              )}
+            </>
           ) : (
-
-            <div
-              style={{
-                marginTop: '5px',
-                color: '#64748b',
-                fontSize: '14px'
-              }}
-            >
+            <div className="home-summary-value muted">
               No bills available
             </div>
-
           )}
 
         </button>
@@ -657,48 +572,33 @@ function Home({ user, onNavigate }) {
 
         <button
           type="button"
+          className="home-summary-card"
           onClick={() =>
             onNavigate &&
             onNavigate('complaints')
           }
-          style={{
-            textAlign: 'left',
-            border: '1px solid #e2e8f0',
-            background: '#fff',
-            borderRadius: '12px',
-            padding: '18px',
-            cursor: 'pointer'
-          }}
         >
 
-          <div
-            style={{
-              fontSize: '26px',
-              marginBottom: '8px'
-            }}
-          >
+          <div className="home-card-icon">
             🔧
           </div>
 
-          <div
-            style={{
-              fontWeight: 600,
-              fontSize: '16px'
-            }}
-          >
+          <div className="home-summary-title">
             Complaints
           </div>
 
-          <div
-            style={{
-              marginTop: '5px',
-              color: '#64748b',
-              fontSize: '14px'
-            }}
-          >
+          <div className="home-summary-value">
             {complaintSummary.open +
               complaintSummary.inProgress}{' '}
             active
+          </div>
+
+          <div className="home-summary-subtitle">
+            {complaintSummary.total}{' '}
+            total complaint
+            {complaintSummary.total !== 1
+              ? 's'
+              : ''}
           </div>
 
         </button>
@@ -708,46 +608,27 @@ function Home({ user, onNavigate }) {
 
         <button
           type="button"
+          className="home-summary-card"
           onClick={() =>
             onNavigate &&
             onNavigate('notices')
           }
-          style={{
-            textAlign: 'left',
-            border: '1px solid #e2e8f0',
-            background: '#fff',
-            borderRadius: '12px',
-            padding: '18px',
-            cursor: 'pointer'
-          }}
         >
 
-          <div
-            style={{
-              fontSize: '26px',
-              marginBottom: '8px'
-            }}
-          >
+          <div className="home-card-icon">
             📢
           </div>
 
-          <div
-            style={{
-              fontWeight: 600,
-              fontSize: '16px'
-            }}
-          >
+          <div className="home-summary-title">
             Notices
           </div>
 
-          <div
-            style={{
-              marginTop: '5px',
-              color: '#64748b',
-              fontSize: '14px'
-            }}
-          >
-            {notices.length} recent notice
+          <div className="home-summary-value">
+            {notices.length}
+          </div>
+
+          <div className="home-summary-subtitle">
+            Recent notice
             {notices.length !== 1
               ? 's'
               : ''}
@@ -755,69 +636,34 @@ function Home({ user, onNavigate }) {
 
         </button>
 
-      </div>
+      </section>
 
 
       {/* ========================================
           SOCIETY FUNDS
       ========================================= */}
 
-      <section
-        style={{
-          background: '#fff',
-          border: '1px solid #e2e8f0',
-          borderRadius: '12px',
-          padding: '16px',
-          marginBottom: '20px'
-        }}
-      >
+      <section className="home-section">
 
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: '12px',
-            marginBottom: '16px'
-          }}
-        >
+        <div className="home-section-header">
 
           <div>
-
-            <h2
-              style={{
-                margin: 0,
-                fontSize: '20px'
-              }}
-            >
+            <h2>
               Society Funds
             </h2>
 
-            <p
-              style={{
-                margin: '5px 0 0',
-                color: '#64748b',
-                fontSize: '13px'
-              }}
-            >
+            <p>
               Current society fund balances
             </p>
-
           </div>
 
           <button
             type="button"
+            className="home-link-button"
             onClick={() =>
               onNavigate &&
               onNavigate('finance')
             }
-            style={{
-              border: 'none',
-              background: 'transparent',
-              fontWeight: 600,
-              cursor: 'pointer',
-              whiteSpace: 'nowrap'
-            }}
           >
             View Finance →
           </button>
@@ -825,41 +671,21 @@ function Home({ user, onNavigate }) {
         </div>
 
 
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns:
-              'repeat(2, minmax(0, 1fr))',
-            gap: '12px'
-          }}
-        >
+        <div className="home-funds-grid">
 
           {/* MAINTENANCE */}
 
-          <div
-            style={{
-              background: '#f8fafc',
-              borderRadius: '10px',
-              padding: '16px',
-              textAlign: 'center'
-            }}
-          >
+          <div className="home-fund-card">
 
-            <div
-              style={{
-                fontSize: '12px',
-                color: '#64748b',
-                marginBottom: '6px'
-              }}
-            >
+            <div className="home-fund-icon">
+              🔧
+            </div>
+
+            <div className="home-fund-label">
               Maintenance Fund
             </div>
 
-            <strong
-              style={{
-                fontSize: '17px'
-              }}
-            >
+            <strong>
               {formatAmount(
                 maintenanceBalance
               )}
@@ -870,30 +696,17 @@ function Home({ user, onNavigate }) {
 
           {/* CORPUS */}
 
-          <div
-            style={{
-              background: '#f8fafc',
-              borderRadius: '10px',
-              padding: '16px',
-              textAlign: 'center'
-            }}
-          >
+          <div className="home-fund-card">
 
-            <div
-              style={{
-                fontSize: '12px',
-                color: '#64748b',
-                marginBottom: '6px'
-              }}
-            >
+            <div className="home-fund-icon">
+              🏦
+            </div>
+
+            <div className="home-fund-label">
               Corpus Fund
             </div>
 
-            <strong
-              style={{
-                fontSize: '17px'
-              }}
-            >
+            <strong>
               {formatAmount(
                 corpusBalance
               )}
@@ -910,62 +723,28 @@ function Home({ user, onNavigate }) {
           LATEST NOTICES
       ========================================= */}
 
-      <section
-        style={{
-          background: '#fff',
-          border: '1px solid #e2e8f0',
-          borderRadius: '12px',
-          padding: '18px',
-          marginBottom: '20px'
-        }}
-      >
+      <section className="home-section">
 
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '14px'
-          }}
-        >
+        <div className="home-section-header">
 
           <div>
-
-            <h2
-              style={{
-                margin: 0,
-                fontSize: '20px'
-              }}
-            >
+            <h2>
               Latest Notices
             </h2>
 
-            <p
-              style={{
-                margin: '5px 0 0',
-                color: '#64748b',
-                fontSize: '13px'
-              }}
-            >
+            <p>
               Recent announcements from the
               society
             </p>
-
           </div>
 
           <button
             type="button"
+            className="home-link-button"
             onClick={() =>
               onNavigate &&
               onNavigate('notices')
             }
-            style={{
-              border: 'none',
-              background: 'transparent',
-              fontWeight: 600,
-              cursor: 'pointer',
-              whiteSpace: 'nowrap'
-            }}
           >
             View All →
           </button>
@@ -975,69 +754,37 @@ function Home({ user, onNavigate }) {
 
         {notices.length === 0 ? (
 
-          <div
-            style={{
-              padding: '24px 10px',
-              textAlign: 'center',
-              color: '#64748b'
-            }}
-          >
-            No recent notices.
+          <div className="home-empty">
+            <div className="home-empty-icon">
+              📢
+            </div>
+
+            <div>
+              No recent notices.
+            </div>
           </div>
 
         ) : (
 
-          <div
-            style={{
-              display: 'grid',
-              gap: '10px'
-            }}
-          >
+          <div className="home-notice-list">
 
             {notices.map(notice => (
 
               <div
                 key={notice.id}
-                style={{
-                  border:
-                    '1px solid #e2e8f0',
-                  borderRadius: '10px',
-                  padding: '14px'
-                }}
+                className="home-notice-card"
               >
 
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent:
-                      'space-between',
-                    alignItems: 'flex-start',
-                    gap: '10px'
-                  }}
-                >
+                <div className="home-notice-header">
 
-                  <h3
-                    style={{
-                      margin: 0,
-                      fontSize: '15px'
-                    }}
-                  >
+                  <h3>
                     {notice.title}
                   </h3>
 
                   <span
-                    style={{
-                      ...getPriorityStyle(
-                        notice.priority
-                      ),
-                      borderRadius: '999px',
-                      padding:
-                        '3px 8px',
-                      fontSize: '11px',
-                      fontWeight: 600,
-                      whiteSpace:
-                        'nowrap'
-                    }}
+                    className={getPriorityClass(
+                      notice.priority
+                    )}
                   >
                     {notice.priority}
                   </span>
@@ -1046,28 +793,13 @@ function Home({ user, onNavigate }) {
 
 
                 {notice.description && (
-
-                  <p
-                    style={{
-                      margin:
-                        '7px 0',
-                      color: '#475569',
-                      fontSize: '13px',
-                      lineHeight: 1.5
-                    }}
-                  >
+                  <p className="home-notice-description">
                     {notice.description}
                   </p>
-
                 )}
 
 
-                <div
-                  style={{
-                    color: '#94a3b8',
-                    fontSize: '12px'
-                  }}
-                >
+                <div className="home-notice-date">
                   Published{' '}
                   {formatDate(
                     notice.published_at
@@ -1091,64 +823,27 @@ function Home({ user, onNavigate }) {
 
       {flat && (
 
-        <section
-          style={{
-            background: '#fff',
-            border:
-              '1px solid #e2e8f0',
-            borderRadius: '12px',
-            padding: '18px',
-            marginBottom: '20px'
-          }}
-        >
+        <section className="home-section">
 
-          <div
-            style={{
-              display: 'flex',
-              justifyContent:
-                'space-between',
-              alignItems: 'center',
-              marginBottom: '14px'
-            }}
-          >
+          <div className="home-section-header">
 
             <div>
-
-              <h2
-                style={{
-                  margin: 0,
-                  fontSize: '20px'
-                }}
-              >
+              <h2>
                 My Flat
               </h2>
 
-              <p
-                style={{
-                  margin:
-                    '5px 0 0',
-                  color: '#64748b',
-                  fontSize: '13px'
-                }}
-              >
+              <p>
                 Your apartment details
               </p>
-
             </div>
 
             <button
               type="button"
+              className="home-link-button"
               onClick={() =>
                 onNavigate &&
                 onNavigate('flat')
               }
-              style={{
-                border: 'none',
-                background:
-                  'transparent',
-                fontWeight: 600,
-                cursor: 'pointer'
-              }}
             >
               View Details →
             </button>
@@ -1156,31 +851,12 @@ function Home({ user, onNavigate }) {
           </div>
 
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns:
-                'repeat(auto-fit, minmax(130px, 1fr))',
-              gap: '10px'
-            }}
-          >
+          <div className="home-flat-grid">
 
-            <div
-              style={{
-                background:
-                  '#f8fafc',
-                padding: '12px',
-                borderRadius: '8px'
-              }}
-            >
-              <div
-                style={{
-                  fontSize: '11px',
-                  color: '#64748b'
-                }}
-              >
+            <div className="home-flat-item">
+              <span>
                 Flat
-              </div>
+              </span>
 
               <strong>
                 {flat.flat_number}
@@ -1188,70 +864,32 @@ function Home({ user, onNavigate }) {
             </div>
 
 
-            <div
-              style={{
-                background:
-                  '#f8fafc',
-                padding: '12px',
-                borderRadius: '8px'
-              }}
-            >
-              <div
-                style={{
-                  fontSize: '11px',
-                  color: '#64748b'
-                }}
-              >
+            <div className="home-flat-item">
+              <span>
                 Block
-              </div>
+              </span>
 
               <strong>
-                {flat.blocks?.name ||
-                  '-'}
+                {flat.blocks?.name || '-'}
               </strong>
             </div>
 
 
-            <div
-              style={{
-                background:
-                  '#f8fafc',
-                padding: '12px',
-                borderRadius: '8px'
-              }}
-            >
-              <div
-                style={{
-                  fontSize: '11px',
-                  color: '#64748b'
-                }}
-              >
+            <div className="home-flat-item">
+              <span>
                 Floor
-              </div>
+              </span>
 
               <strong>
-                {flat.floor_number ||
-                  '-'}
+                {flat.floor_number || '-'}
               </strong>
             </div>
 
 
-            <div
-              style={{
-                background:
-                  '#f8fafc',
-                padding: '12px',
-                borderRadius: '8px'
-              }}
-            >
-              <div
-                style={{
-                  fontSize: '11px',
-                  color: '#64748b'
-                }}
-              >
+            <div className="home-flat-item">
+              <span>
                 Area
-              </div>
+              </span>
 
               <strong>
                 {flat.area_sqft
