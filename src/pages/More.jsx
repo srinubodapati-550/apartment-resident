@@ -10,22 +10,22 @@ function More({
       <div className="more-menu">
 
         <button onClick={() => onNavigate('finance')}>
-          💰
-        <span>Finance</span>
+          <span className="more-menu-icon">💰</span>
+          <span>Finance</span>
         </button>
 
         <button onClick={() => onNavigate('notices')}>
-          📢
+          <span className="more-menu-icon">📢</span>
           <span>Notices</span>
         </button>
 
         <button onClick={() => onNavigate('notifications')}>
-          🔔
-          <span>  Notifications</span>
+          <span className="more-menu-icon">🔔</span>
+          <span>Notifications</span>
         </button>
 
         <button onClick={() => onNavigate('profile')}>
-          👤
+          <span className="more-menu-icon">👤</span>
           <span>Profile</span>
         </button>
 
@@ -33,7 +33,7 @@ function More({
           className="logout-button"
           onClick={onLogout}
         >
-          🚪
+          <span className="more-menu-icon">🚪</span>
           <span>Logout</span>
         </button>
 
