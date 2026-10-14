@@ -329,11 +329,10 @@ function Finance({ user, onSelectIncoming }) {
    * =========================
    */
 
-  const recentIncoming =
-    filteredIncoming.slice(0, 5)
-
-  const recentExpenses =
-    filteredExpenses.slice(0, 5)
+  const recentIncoming = filteredIncoming
+    
+  const recentExpenses = filteredExpenses
+   
 
   /*
    * =========================
@@ -666,12 +665,7 @@ function Finance({ user, onSelectIncoming }) {
 
         )}
 
-        {filteredIncoming.length > 5 && (
-          <div className="finance-more-expenses">
-            Showing the latest 5 incoming
-            transactions.
-          </div>
-        )}
+
 
       </section>
 
@@ -788,11 +782,7 @@ function Finance({ user, onSelectIncoming }) {
 
         )}
 
-        {filteredExpenses.length > 5 && (
-          <div className="finance-more-expenses">
-            Showing the latest 5 expenses.
-          </div>
-        )}
+
 
       </section>
 

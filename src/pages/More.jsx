@@ -1,42 +1,122 @@
+import './More.css'
+
 function More({
   onNavigate,
   onLogout
 }) {
-  return (
-    <div className="page">
+  const menuItems = [
+    {
+      id: 'finance',
+      icon: '💰',
+      title: 'Finance',
+      description: 'View funds, expenses and incoming amounts',
+      color: 'finance'
+    },
+    {
+      id: 'notices',
+      icon: '📢',
+      title: 'Notices',
+      description: 'Read apartment announcements',
+      color: 'notices'
+    },
+    {
+      id: 'notifications',
+      icon: '🔔',
+      title: 'Notifications',
+      description: 'Check your latest updates',
+      color: 'notifications'
+    },
+    {
+      id: 'profile',
+      icon: '👤',
+      title: 'My Profile',
+      description: 'View your personal information',
+      color: 'profile'
+    }
+  ]
 
-      <h1>More</h1>
+  return (
+    <div className="page more-page">
+
+      <div className="more-page-header">
+        <div>
+          <h1>More</h1>
+          <p>Manage your apartment account and services.</p>
+        </div>
+
+        <div className="more-header-icon">
+          ⚙️
+        </div>
+      </div>
+
+      <div className="more-section-heading">
+        <h2>Quick Access</h2>
+        <span>4 services</span>
+      </div>
 
       <div className="more-menu">
 
-        <button onClick={() => onNavigate('finance')}>
-          <span className="more-menu-icon">💰</span>
-          <span>Finance</span>
-        </button>
+        {menuItems.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            className="more-menu-card"
+            onClick={() => onNavigate(item.id)}
+          >
+            <span className={`more-menu-icon ${item.color}`}>
+              {item.icon}
+            </span>
 
-        <button onClick={() => onNavigate('notices')}>
-          <span className="more-menu-icon">📢</span>
-          <span>Notices</span>
-        </button>
+            <span className="more-menu-content">
+              <span className="more-menu-title">
+                {item.title}
+              </span>
 
-        <button onClick={() => onNavigate('notifications')}>
-          <span className="more-menu-icon">🔔</span>
-          <span>Notifications</span>
-        </button>
+              <span className="more-menu-description">
+                {item.description}
+              </span>
+            </span>
 
-        <button onClick={() => onNavigate('profile')}>
-          <span className="more-menu-icon">👤</span>
-          <span>Profile</span>
-        </button>
+            <span className="more-menu-arrow">
+              ›
+            </span>
+          </button>
+        ))}
+
+      </div>
+
+      <div className="more-account-section">
+        <h2>Account</h2>
 
         <button
-          className="logout-button"
+          type="button"
+          className="more-menu-card more-logout-card"
           onClick={onLogout}
         >
-          <span className="more-menu-icon">🚪</span>
-          <span>Logout</span>
-        </button>
+          <span className="more-menu-icon logout-icon">
+            🚪
+          </span>
 
+          <span className="more-menu-content">
+            <span className="more-menu-title">
+              Logout
+            </span>
+
+            <span className="more-menu-description">
+              Sign out of your resident account
+            </span>
+          </span>
+
+          <span className="more-menu-arrow">
+            ›
+          </span>
+        </button>
+      </div>
+
+      <div className="more-footer">
+        <span>🏠</span>
+        <p>Apartment Resident Portal</p>
+        <small>Manage your home, your way.</small>
       </div>
 
     </div>

@@ -1,0 +1,302 @@
+/* ================================
+   MORE PAGE
+================================ */
+
+.more-page {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px 16px 32px;
+  box-sizing: border-box;
+  color: #24324b;
+}
+
+/* Page heading */
+
+.more-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.more-page-header h1 {
+  margin: 0 0 8px;
+  color: #243b63;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.more-page-header p {
+  margin: 0;
+  color: #77839a;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.more-header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #e4edff, #f0e8ff);
+  font-size: 25px;
+}
+
+/* Section headings */
+
+.more-section-heading,
+.more-account-section > h2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 14px;
+}
+
+.more-section-heading h2,
+.more-account-section > h2 {
+  color: #344563;
+  font-size: 17px;
+  font-weight: 750;
+}
+
+.more-section-heading h2,
+.more-account-section > h2 {
+  margin-top: 0;
+}
+
+.more-section-heading > span {
+  padding: 6px 10px;
+  border-radius: 20px;
+  background: #edf3ff;
+  color: #5573ac;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Menu list */
+
+.more-menu {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.more-menu-card {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 100px;
+  padding: 18px;
+  gap: 13px;
+  border: 1px solid #e9eef6;
+  border-radius: 20px;
+  background: #ffffff;
+  color: #263750;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 5px 18px rgba(42, 65, 105, 0.055);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.more-menu-card:hover {
+  transform: translateY(-3px);
+  border-color: #cbd9f7;
+  box-shadow: 0 10px 24px rgba(42, 65, 105, 0.10);
+}
+
+.more-menu-card:focus-visible {
+  outline: 3px solid #9bb8ff;
+  outline-offset: 3px;
+}
+
+.more-menu-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  font-size: 24px;
+}
+
+/* Icon color themes */
+
+.more-menu-icon.finance {
+  background: #e2f8ec;
+}
+
+.more-menu-icon.notices {
+  background: #fff0d9;
+}
+
+.more-menu-icon.notifications {
+  background: #eee8ff;
+}
+
+.more-menu-icon.profile {
+  background: #e3efff;
+}
+
+.more-menu-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  gap: 6px;
+}
+
+.more-menu-title {
+  color: #2d3d59;
+  font-size: 15px;
+  font-weight: 750;
+}
+
+.more-menu-description {
+  color: #8390a5;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.more-menu-arrow {
+  flex-shrink: 0;
+  color: #9ba9bd;
+  font-size: 28px;
+  line-height: 1;
+}
+
+/* Account and logout */
+
+.more-account-section {
+  margin-top: 30px;
+}
+
+.more-account-section > h2 {
+  margin-bottom: 14px;
+}
+
+.more-logout-card {
+  border-color: #f4e2e4;
+  background: #fffdfd;
+}
+
+.more-logout-card:hover {
+  border-color: #f0c4c8;
+  background: #fff8f8;
+}
+
+.logout-icon {
+  background: #ffebed;
+}
+
+.more-logout-card .more-menu-title {
+  color: #bd414d;
+}
+
+.more-logout-card .more-menu-arrow {
+  color: #d17c84;
+}
+
+/* Footer */
+
+.more-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  margin-top: 38px;
+  padding: 24px 12px;
+  border-top: 1px solid #edf0f6;
+  text-align: center;
+}
+
+.more-footer > span {
+  font-size: 25px;
+}
+
+.more-footer p {
+  margin: 0;
+  color: #687995;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.more-footer small {
+  color: #9aa5b6;
+  font-size: 12px;
+}
+
+/* Tablet and mobile */
+
+@media (max-width: 600px) {
+  .more-page {
+    padding: 18px 12px 28px;
+  }
+
+  .more-page-header {
+    margin-bottom: 25px;
+  }
+
+  .more-page-header h1 {
+    font-size: 25px;
+  }
+
+  .more-header-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 15px;
+    font-size: 22px;
+  }
+
+  .more-menu {
+    grid-template-columns: 1fr;
+    gap: 11px;
+  }
+
+  .more-menu-card {
+    min-height: 86px;
+    padding: 14px;
+    border-radius: 17px;
+    gap: 12px;
+  }
+
+  .more-menu-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    font-size: 22px;
+  }
+
+  .more-menu-title {
+    font-size: 14px;
+  }
+
+  .more-menu-description {
+    font-size: 12px;
+  }
+
+  .more-account-section {
+    margin-top: 25px;
+  }
+
+  .more-footer {
+    margin-top: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .more-menu-card {
+    transition: none;
+  }
+}
